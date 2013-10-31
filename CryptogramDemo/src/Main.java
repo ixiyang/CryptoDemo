@@ -13,9 +13,10 @@ public class Main {
 		// testDES();
 		// testDESede();
 		// testRSA();
-		//testMD();
-		//testSHA();
-		testMac();
+		// testMD();
+		// testSHA();
+		//testMac();
+		testAES();
 	}
 
 	public static void testDES() throws Exception {
@@ -103,37 +104,51 @@ public class Main {
 		System.out
 				.println(Base64.encode(SHACoder.encodeSHA512(str.getBytes())));
 	}
-	
-	public static void testMac() throws Exception{
-		String str="Mac消息摘要";
+
+	public static void testMac() throws Exception {
+		String str = "Mac消息摘要";
 		System.out.println("HmacMD5");
-		//密钥
-		byte[] key=MACCoder.initHmacMD5Key();
-		byte[] encode=MACCoder.encodeHmacMD5(str.getBytes(), key);
+		// 密钥
+		byte[] key = MACCoder.initHmacMD5Key();
+		byte[] encode = MACCoder.encodeHmacMD5(str.getBytes(), key);
 		System.out.println(Base64.encode(encode));
-		
+
 		System.out.println("HmacSHA");
-		//密钥
-		key=MACCoder.initHmacSHAKey();
-		encode=MACCoder.encodeHmacSHA(str.getBytes(), key);
+		// 密钥
+		key = MACCoder.initHmacSHAKey();
+		encode = MACCoder.encodeHmacSHA(str.getBytes(), key);
 		System.out.println(Base64.encode(encode));
-		
+
 		System.out.println("HmacSHA256");
-		//密钥
-		key=MACCoder.initHmacSHA256Key();
-		encode=MACCoder.encodeHmacSHA256(str.getBytes(), key);
+		// 密钥
+		key = MACCoder.initHmacSHA256Key();
+		encode = MACCoder.encodeHmacSHA256(str.getBytes(), key);
 		System.out.println(Base64.encode(encode));
-		
+
 		System.out.println("HmacSHA384");
-		//密钥
-		key=MACCoder.initHmacSHA384Key();
-		encode=MACCoder.encodeHmacSHA384(str.getBytes(), key);
+		// 密钥
+		key = MACCoder.initHmacSHA384Key();
+		encode = MACCoder.encodeHmacSHA384(str.getBytes(), key);
 		System.out.println(Base64.encode(encode));
-		
+
 		System.out.println("HmacSHA512");
-		//密钥
-		key=MACCoder.initHmacSHA512Key();
-		encode=MACCoder.encodeHmacSHA512(str.getBytes(), key);
+		// 密钥
+		key = MACCoder.initHmacSHA512Key();
+		encode = MACCoder.encodeHmacSHA512(str.getBytes(), key);
 		System.out.println(Base64.encode(encode));
+	}
+
+	public static void testAES() throws Exception {
+		String str = "AES加密";
+		byte[] data=str.getBytes();
+		System.out.println("密钥");
+		byte[] key=AESCoder.initKey();
+		System.out.println(Base64.encode(key));
+		System.out.println("加密后");
+		data=AESCoder.encrypt(data, key);
+		System.out.println(Base64.encode(data));
+		System.out.println("解密后");
+		data=AESCoder.decrypt(data, key);
+		System.out.println(new String(data));
 	}
 }

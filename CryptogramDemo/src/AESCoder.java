@@ -1,41 +1,29 @@
-import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
-public abstract class DESCoder {
-	/**
-	 * 密钥算法 java 6只支持56位密码
-	 * 
-	 */
-	public static final String KEY_ALGORITHM = "DES";
-	/**
-	 * 加密或解密使用的算法/工作模式/填充方式
-	 */
-	public static final String CIPHER_ALGORITHM = "DES/ECB/PKCS5Padding";
+public abstract class AESCoder {
 
 	/**
-	 * 将二进制的密钥转换为密钥对象
+	 * 算法名称
+	 */
+	public static final String KEY_ALGORITHM = "AES";
+	/**
+	 * 加密或者解密的算法/工作模式/填充方式 java6支持PKCS5Padding bouncy castle支持PKCS7Padding
+	 */
+	public static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
+
+	/**
+	 * 返回Key对象
 	 * 
 	 * @param key
-	 *            二进制密钥
-	 * @return 密钥对象
-	 * @throws Exception
+	 * @return
 	 */
-	private static Key toKey(byte[] key) throws Exception {
-		// 实例化des密钥材料
-		DESKeySpec dks = new DESKeySpec(key);
-		// 实例化密钥工厂
-		SecretKeyFactory keyFactory = SecretKeyFactory
-				.getInstance(KEY_ALGORITHM);
-		// 生成密钥
-		SecretKey secretKey = keyFactory.generateSecret(dks);
+	public static Key toKey(byte[] key) {
+		SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
 		return secretKey;
 	}
 
@@ -53,6 +41,10 @@ public abstract class DESCoder {
 		// 还原密钥
 		Key k = toKey(key);
 		// 实例化
+		/**
+		 * 使用PKCS7Padding Cipher cipher =
+		 * Cipher.getInstance(CIPHER_ALGORITHM，"BC");
+		 */
 		Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
 		// 初始化，设置为解密模式
 		cipher.init(Cipher.DECRYPT_MODE, k);
@@ -82,20 +74,18 @@ public abstract class DESCoder {
 	}
 
 	/**
-	 * 生成密钥 java6只支持56位密钥 Bouncy Castle只支持64位密钥
+	 * 生成密钥
 	 * 
-	 * @return 二进制的密钥
+	 * @return
 	 * @throws Exception
 	 */
 	public static byte[] initKey() throws Exception {
 		// 实例化密钥生成器
 		/*
-		 * 要使用64位的密钥，将 KeyGenerator kg=KeyGenerator.getInstance(KEY_ALGORITHM);
-		 * kg.init(56); 替换为 KeyGenerator
-		 * kg=KeyGenerator.getInstance(KEY_ALGORITHM, "BC"); kg.init(64);
+		 * AEC要求密钥长度为128,192和256位
 		 */
 		KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
-		kg.init(56);
+		kg.init(128);
 		// 生成密钥
 		SecretKey secretKey = kg.generateKey();
 		// 获得密钥的二进制形式
